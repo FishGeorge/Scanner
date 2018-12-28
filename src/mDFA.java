@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class mDFA {
     public ArrayList<StateNode> states;
     public ArrayList<Closure> closures;
-    public String[] symbols = {"a", "b"};
+    public String[] symbols;
 
     private boolean isSliced = false;
 
@@ -99,14 +99,40 @@ public class mDFA {
 
     public static void main(String[] args) {
         // 1
-//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("aa*(bab*a)*(a|b)b*")));
+//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("aa*(bab*a)*(a|b)b*"), new String[]{"a", "b"}));
         // 2
-//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("a(bab*a)*(a|b)b*")));
+//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("a(bab*a)*(a|b)b*"), new String[]{"a", "b"}));
         // 3
-//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("(ab*a)*(a|b)b*")));
+//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("(ab*a)*(a|b)b*"), new String[]{"a", "b"}));
         // 4
-//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("((ba*)*a)*(a|b)")));
+//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("((ba*)*a)*(a|b)"), new String[]{"a", "b"}));
         // 5
-        mDFA obj_mDFA = new mDFA(new DFA(new NFA("aa*((bab*a)*(a|b)b*)*")));
+//        mDFA obj_mDFA = new mDFA(new DFA(new NFA("aa*((bab*a)*(a|b)b*)*"), new String[]{"a", "b"}));
+
+        // 对正则表达式的书写要求
+        // 单个字母用字母l表示，单个数字用字母n表示
+        // 运算符 + - / = > < % ! & 用自身表示，乘运算的*用字母k表示，或运算的|用字母o表示
+        // 分隔符 , ; { } 用自身表示，左括号(用字母q表示，右括号)用字母p表示
+        mDFA obj_mDFA = new mDFA(
+                new DFA(new NFA(
+                        // 关键字/保留字
+                        "(l(l)*)|" +
+                                // 标识符
+                                "((_|$|l)(_|$|l|n)*)|" +
+                                // 运算符
+                                "(+|-|k|/|=|>|<|%|!|o|!=|==|<=|>=|&&|oo)|" +
+                                // 分隔符
+                                "(.|,|;|{|}|q|p)|" +
+                                // 注释符
+                                "//"),
+                        new String[]{
+                                // 字母，数字
+                                "l", "n",
+                                // 运算符
+                                "+", "-", "k", "/", "=", ">", "<", "%", "!", "&", "o",
+                                // 分隔符
+                                ".", ",", ";", "{", "}", "q", "p"
+                        })
+        );
     }
 }

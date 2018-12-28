@@ -4,20 +4,14 @@ public class DFA {
     public ArrayList<StateNode> states;
     public ArrayList<Closure> closures;
 
-//    public String[] symbols = {
-//            // 字母，数字
-//            "l", "n",
-//            // 运算符
-//            "+", "-", "k", "/", "=", ">", "<", "%", "!", "&", "o",
-//            // 分隔符
-//            ".", ",", ";", "{", "}", "q", "p"
-//    };
+    public String[] symbols;
 
-    public String[] symbols = {"a", "b"};
+//    public String[] symbols = {"a", "b"};
 
-    public DFA(NFA nfa) {
+    public DFA(NFA nfa,String[] symbols) {
         states = new ArrayList<StateNode>();
         closures = new ArrayList<Closure>();
+        this.symbols=symbols;
         InitDFA(nfa);
         showDFA();
     }
@@ -107,6 +101,6 @@ public class DFA {
 //                        "(.|,|;|{|}|q|p)|" +
 //                        // 注释符
 //                        "//");
-        DFA dfa = new DFA(new NFA("(ab*a)*(a|b)b*"));
+//        DFA dfa = new DFA(new NFA("(ab*a)*(a|b)b*"));
     }
 }
