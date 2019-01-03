@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class NFA {
     public ArrayList<StateNode> states;
@@ -163,6 +162,7 @@ public class NFA {
 
     public static void main(String[] args) {
 //        new NFA("(ba)*|(b(a|b))");
-        new NFA("(ab*a)*(a|b)b*");
+//        new NFA("(ab*a)*(a|b)b*");
+        new NFA("(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)");
     }
 }

@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Edge {
     public String re;
     public StateNode to;

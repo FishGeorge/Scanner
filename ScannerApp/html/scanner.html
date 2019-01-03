@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Compilers Principle Course Design</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../semantic/semantic.css">
+    <script src="../semantic/jquery-3.2.1.js"></script>
+    <script src="../semantic/semantic.js"></script>
+</head>
+
+<body>
+<div id="ui main container">
+    <div class="ui text container">
+        <!--<h1 class="ui center aligned header"></h1>-->
+        <div class="ui two column doubling stackable grid">
+            <div class="column">
+                <h2 class="ui header">Input: Source code</h2>
+                <div class="ui form">
+                    <div class="field">
+                        <textarea id="inputSrc" placeholder="在这里输入源码..."></textarea>
+                    </div>
+                    <button class="ui button" onclick="rollback()">Refresh</button>
+                    <button class="ui button" onclick="scan()">Scan it!</button>
+                    <p id="tip"></p>
+                </div>
+            </div>
+            <div class="column">
+                <h2 class="ui header">Output: Tokens</h2>
+                <p id="output">test</p>
+            </div>
+        </div>
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui fluid labeled input">
+                    <div class="ui label">RE:</div>
+                    <input id="inputRE" type="text" placeholder="在这里输入RE...">
+                </div>
+            </div>
+            <!--<div class="column">-->
+            <!--<div class="ui fluid labeled input">-->
+            <!--<div class="ui label">RE_Symbols:</div>-->
+            <!--<input id="inputSym" type="text" placeholder="在这里输入RE中用到的符号...">-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <div class="ui text container">
+        <h2 class="ui header">说明与使用方法 .\README.md</h2>
+        <a href="..\html\readme.html">README.md</a>
+        <h2 class="ui header">源文件 .\code\Scanner.js</h2>
+        <a href="..\code\Scanner.js">Scanner.js</a>
+        <h2 class="ui header">符合Java语言的输入（默认） .\doc\ExampleInJava.txt</h2>
+        <a href="..\doc\ExampleInJava.txt">ExampleInJava.txt</a>
+        <div class="ui divider"></div>
+    </div>
+</div>
+<script src="..\code\ArrayList.js"></script>
+<script src="..\code\Edge.js"></script>
+<script src="..\code\StateNode.js"></script>
+<script src="..\code\NFA.js"></script>
+<script src="..\code\Closure.js"></script>
+<script src="..\code\DFA.js"></script>
+<script src="..\code\mDFA.js"></script>
+<script src="..\code\Token.js"></script>
+<script src="..\code\Scanner.js"></script>
+<script type="text/javascript">
+    function scan() {
+        // console.log(new NFA("(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)").showNFA());
+        // console.log(new NFA("(l(l)*)").showNFA());
+        // console.log(new DFA(new NFA("=|>|<|!|(!=)|(==)|(<=)|(>=)"), ["=", ">", "<", "!"]).showDFA());
+        // console.log(new mDFA(new DFA(new NFA("=|>|<|!|(!=)|(==)|(<=)|(>=)"), ["=", ">", "<", "!"])).showDFA());
+        let code = document.getElementById("inputSrc").value;
+        let RE = document.getElementById("inputRE").value;
+        // let RE_symbols = ["l", "n", "_", "$", "+", "-", "k", "/", "=", ">", "<", "%", "!", "&", "o", ".", ",", ";", "{", "}", "[", "]", "q", "p", "\"", "'", "?"];
+        let RE_symbols = getSymbols(RE);
+        let nfa = new NFA(RE);
+        let dfa = new DFA(nfa, RE_symbols);
+        let mdfa = new mDFA(dfa);
+        let scanner = new Scanner(mdfa, new ArrayList());
+        scanner.set(RE);
+        document.getElementById("output").innerText = scanner.scan(code);
+        console.log(nfa.showNFA());
+        console.log(dfa.showDFA());
+        console.log(mdfa.showDFA());
+        document.getElementById("tip").innerText = "按F12打开控制台，查看NFA、DFA、mDFA构成";
+
+        // console.log("Scanner output:\n" + scanner.scan(
+        //     "public class Test{\n" +
+        //     "    public boolean B = 1 <= 2.5;\n" +
+        //     "    public static void main(String[] args){\n" +
+        //     "        System.out.println(\"Hello world!\");\n" +
+        //     "    }\n" +
+        //     "}"));
+    }
+
+    function rollback() {
+        document.getElementById("inputSrc").value = "public class Test{\n" +
+            "    public boolean B = 1 <= 2.5;\n" +
+            "    public static void main(String[] args){\n" +
+            "        System.out.println(\"Hello world!\");\n" +
+            "    }\n" +
+            "}";
+        document.getElementById("inputRE").value = "(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)";
+        // document.getElementById("inputSym").value = "l,n,_,$,+,-,k,/,=,>,<,%,!,&,o,.,,,;,{,},[,],q,p,\"\\\"\",',?";
+        document.getElementById("output").innerText = "";
+        document.getElementById("tip").innerText = "";
+    }
+
+    function getSymbols(RE) {
+        let arr = new ArrayList();
+        for (let i = 0; i < RE.length; i++) {
+            if (RE.charAt(i) !== "(" && RE.charAt(i) !== ")" && RE.charAt(i) !== "|" && RE.charAt(i) !== "*" && !arr.contains(RE.charAt(i)))
+                arr.addFromElement(RE.charAt(i));
+        }
+        return arr._getData();
+    }
+
+    rollback();
+</script>
+</body>
+
+</html>

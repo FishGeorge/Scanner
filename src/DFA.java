@@ -8,7 +8,7 @@ public class DFA {
 
 //    public String[] symbols = {"a", "b"};
 
-    public DFA(NFA nfa,String[] symbols) {
+    public DFA(NFA nfa, String[] symbols) {
         states = new ArrayList<StateNode>();
         closures = new ArrayList<Closure>();
         this.symbols=symbols;
@@ -102,5 +102,6 @@ public class DFA {
 //                        // 注释符
 //                        "//");
 //        DFA dfa = new DFA(new NFA("(ab*a)*(a|b)b*"));
+        new DFA(new NFA("=|>|<|!|(!=)|(==)|(<=)|(>=)"), new String[]{"=", ">", "<", "!"});
     }
 }
