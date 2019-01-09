@@ -21,7 +21,8 @@
                     <div class="field">
                         <textarea id="inputSrc" placeholder="在这里输入源码..."></textarea>
                     </div>
-                    <button class="ui button" onclick="rollback()">Refresh</button>
+                    <button class="ui button" onclick="rollback()">Refresh & NextExample</button>
+                    <!--<button class="ui button" onclick="rollback()">NextExample</button>-->
                     <button class="ui button" onclick="scan()">Scan it!</button>
                     <p id="tip"></p>
                 </div>
@@ -66,6 +67,49 @@
 <script src="..\code\Token.js"></script>
 <script src="..\code\Scanner.js"></script>
 <script type="text/javascript">
+
+    let exCode = [
+        "public class Test{\n" +
+        "    public boolean B = 1 <= 2.5;\n" +
+        "    public static void main(String[] args){\n" +
+        "        System.out.println(\"Hello world!\");\n" +
+        "    }\n" +
+        "}",
+        "public ArrayList<StateNode> findNextNodes(String str) {\n" +
+        "        ArrayList<StateNode> out = new ArrayList<StateNode>();\n" +
+        "        for (int i = 0; i < edges.size(); i++) {\n" +
+        "            if (edges.get(i).re.equals(str))\n" +
+        "                out.add(edges.get(i).to);\n" +
+        "        }\n" +
+        "        return out;\n" +
+        "}",
+        "System.getProperties().put(\"http.proxyHost\", \"someProxyURL\");\n" +
+        "System.getProperties().put(\"http.proxyPort\", \"someProxyPort\");\n" +
+        "System.getProperties().put(\"http.proxyUser\", \"someUserName\");\n" +
+        "System.getProperties().put(\"http.proxyPassword\", \"somePassword\");",
+        "public static void main (String[] args) {\n" +
+        "   int[] a = {1,2,3};\n" +
+        "   a = (int[])resizeArray(a,5);\n" +
+        "   a[3] = 4;\n" +
+        "   a[4] = 5;\n" +
+        "   for (int i=0; i<a.length; i++)\n" +
+        "      System.out.println (a[i]);\n" +
+        "}",
+        "if (closures.get(i2).nodes.contains(closures.get(i).nodes.get(j).edges.get(m).to)) {\n" +
+        "   StateNode tmpNode1 = states.get(i);\n" +
+        "   StateNode tmpNode2 = states.get(i2);\n" +
+        "   tmpNode1.addEdge(new Edge(closures.get(i).nodes.get(j).edges.get(m).re, tmpNode2));\n" +
+        "   states.set(i, tmpNode1);\n" +
+        "}",
+        "Ch3作业 RE->mDFA 经典例题：\n" +
+        "RE: aa*((bab*a)*(a|b)b*)*\n" +
+        "按F12查看控制台Console中的mDFA",
+    ];
+    let exRE = [
+        "(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)",
+        "aa*((bab*a)*(a|b)b*)*"
+    ];
+
     function scan() {
         // console.log(new NFA("(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)").showNFA());
         // console.log(new NFA("(l(l)*)").showNFA());
@@ -84,6 +128,7 @@
         console.log(nfa.showNFA());
         console.log(dfa.showDFA());
         console.log(mdfa.showDFA());
+        console.log("------我是上下次分界线！------");
         document.getElementById("tip").innerText = "按F12打开控制台，查看NFA、DFA、mDFA构成";
 
         // console.log("Scanner output:\n" + scanner.scan(
@@ -95,14 +140,30 @@
         //     "}"));
     }
 
+    let lastNum = -1;
+
+    function changeExample() {
+        let num = randomInt(0, 5);
+        while (num === lastNum)
+            num = randomInt(0, 5);
+        lastNum = num;
+        // console.log(num);
+        document.getElementById("inputSrc").value = exCode[num];
+        if (num === 5)
+            document.getElementById("inputRE").value = exRE[1];
+        else
+            document.getElementById("inputRE").value = exRE[0];
+    }
+
     function rollback() {
-        document.getElementById("inputSrc").value = "public class Test{\n" +
-            "    public boolean B = 1 <= 2.5;\n" +
-            "    public static void main(String[] args){\n" +
-            "        System.out.println(\"Hello world!\");\n" +
-            "    }\n" +
-            "}";
-        document.getElementById("inputRE").value = "(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)";
+        // document.getElementById("inputSrc").value = "public class Test{\n" +
+        //     "    public boolean B = 1 <= 2.5;\n" +
+        //     "    public static void main(String[] args){\n" +
+        //     "        System.out.println(\"Hello world!\");\n" +
+        //     "    }\n" +
+        //     "}";
+        // document.getElementById("inputRE").value = "(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)";
+        changeExample();
         // document.getElementById("inputSym").value = "l,n,_,$,+,-,k,/,=,>,<,%,!,&,o,.,,,;,{,},[,],q,p,\"\\\"\",',?";
         document.getElementById("output").innerText = "";
         document.getElementById("tip").innerText = "";
@@ -118,6 +179,10 @@
     }
 
     rollback();
+
+    function randomInt(n, m) {
+        return Math.floor(Math.random() * (m - n + 1) + n);
+    }
 </script>
 </body>
 
