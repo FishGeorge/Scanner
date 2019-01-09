@@ -104,9 +104,11 @@
         "Ch3作业 RE->mDFA 经典例题：\n" +
         "RE: aa*((bab*a)*(a|b)b*)*\n" +
         "按F12查看控制台Console中的mDFA",
+        // "a[4]=5;",
     ];
     let exRE = [
-        "(l(l)*)|(nn*)|(nn*.nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|;|{|}|[|]|q|p)|(\"|'|?)",
+        "(ll*)|(nn*)|((_|$|l)(_|$|l|n)*)|(+|-|k|/|=|>|<|%|!|(!=)|(==)|(<=)|(>=)|(&&)|(oo))|(.|,|:|;|{|}|[|]|q|p)|(\"|'|?)",
+        // "(nn*)|[|]|=|;|l",
         "aa*((bab*a)*(a|b)b*)*"
     ];
 
@@ -117,8 +119,9 @@
         // console.log(new mDFA(new DFA(new NFA("=|>|<|!|(!=)|(==)|(<=)|(>=)"), ["=", ">", "<", "!"])).showDFA());
         let code = document.getElementById("inputSrc").value;
         let RE = document.getElementById("inputRE").value;
-        // let RE_symbols = ["l", "n", "_", "$", "+", "-", "k", "/", "=", ">", "<", "%", "!", "&", "o", ".", ",", ";", "{", "}", "[", "]", "q", "p", "\"", "'", "?"];
+        // let RE_symbols = ["l", "n", "_", "$", "+", "-", "k", "/", "=", ">", "<", "%", "!", "&", "o", ".", ",",":", ";", "{", "}", "[", "]", "q", "p", "\"", "'", "?"];
         let RE_symbols = getSymbols(RE);
+        // console.log(RE_symbols);
         let nfa = new NFA(RE);
         let dfa = new DFA(nfa, RE_symbols);
         let mdfa = new mDFA(dfa);
@@ -128,6 +131,8 @@
         console.log(nfa.showNFA());
         console.log(dfa.showDFA());
         console.log(mdfa.showDFA());
+        console.log("---[0]表示0为FA起点---");
+        console.log("---(1)表示1为FA接受态---");
         console.log("------我是上下次分界线！------");
         document.getElementById("tip").innerText = "按F12打开控制台，查看NFA、DFA、mDFA构成";
 

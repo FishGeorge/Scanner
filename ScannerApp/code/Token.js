@@ -17,7 +17,7 @@ class Token {
 
     toString() {
         if (this.hasContent)
-            return "<" + this.type + "," + this.value + ">";
+            return "<" + this.type + ", " + this.value + " >";
         else
             return "<" + this.type + ">";
     }

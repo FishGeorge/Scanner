@@ -87,7 +87,7 @@ class Scanner {
                 str1For_mDFA = charFromcode_now;
             }
             if (node_now.findNextNodes(str1For_mDFA).size() === 0) {// 将pt这一位字符输入状态机，若发现无下一状态
-                if (isInErr && str1For_mDFA.equals(" ")) {// 若之前存在code词法错误，且该字符为空格，处理错误
+                if (isInErr && str1For_mDFA === " ") {// 若之前存在code词法错误，且该字符为空格，处理错误
                     tokens.addFromElement(Token.TokenConstructFromValue("err", codeBlock));
                     isInErr = false;
                     codeBlock = "";
@@ -116,6 +116,25 @@ class Scanner {
                     pt--;
                     codeBlock = "";
                     node_now = this.mDFA_Scanner.states.get(this.mDFA_Scanner.startnode_index);
+                } else if (pt === length_code) {
+                    // 最后一位
+                    codeBlock += charFromcode_now;
+                    if (node_now.isEnd) {// 当前处于接受态
+                        if (this.isInTokenTypes(codeBlock) !== -1) // 匹配到非id与num的字符串
+                            tokens.addFromElement(Token.TokenConstructFromValue(this.tokentype.get(this.isInTokenTypes(codeBlock))[1], codeBlock));
+                        else if (this.isNumeric(codeBlock))
+                            tokens.addFromElement(Token.TokenConstructFromValue("NUM", codeBlock));
+                        else
+                            tokens.addFromElement(Token.TokenConstructFromValue("ID", codeBlock));
+//                    codeBlock = String.valueOf(charFromcode_now);
+                        if (!(str1For_mDFA === " " || str1For_mDFA === "\n")) pt--;
+                        codeBlock = "";
+                        node_now = this.mDFA_Scanner.states.get(this.mDFA_Scanner.startnode_index);
+                    } else {// 若不处于接受态，说明code与RE不符
+                        if (codeBlock === "") continue;// 排除掉多余空格与回车
+                        isInErr = true;
+                        node_now = this.mDFA_Scanner.states.get(this.mDFA_Scanner.startnode_index);
+                    }
                 } else {
                     node_now = node_now.findNextNodes(str1For_mDFA).get(0);
                     codeBlock += charFromcode_now;
