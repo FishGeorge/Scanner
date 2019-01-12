@@ -1,10 +1,12 @@
 # Compilers Principle Course Design
-## Introduction
-&emsp;&emsp;原先该词法分析器是开发在Java下的，有严格的OO设计封装。因为后来需求变更想做一个UI，Java平台的UI框架又十分贫瘠，所以花了不少时间把Java代码移植到JS下，代码也有非常浓厚的OO味在里面（苦笑）。Java源代码烦请移步<a href="https://github.com/FishGeorge/Scanner">FishGeorge/Scanner</a>获取。<br>
-&emsp;&emsp;CP老师的要求原本是“输入RE，输出一个程序。而该程序接受输入Code，输出Token串”，从设计上考虑，我将上下两层合并，做成了“输入RE与Code，输出Token串”。这两种程序我认为在实现价值上是等价的。<br>
+## Introduction & Experiment Summary
+&emsp;&emsp;原先该词法分析器是开发在Java下的，有严格的OO设计封装。因为后来需求变更想做一个UI，Java平台的UI框架又十分贫瘠，所以花了不少时间把Java代码移植到JS下，代码也有非常浓厚的OO味在里面（苦笑）。原Java源代码附在根目录下，少数逻辑bug的修复未应用到Java版本，只修改了JS版本，所以Java版仅供参考。<br>
+&emsp;&emsp;老师的要求是“输入RE，输出一个程序；向新生成的程序输入Code，输出Token串”，从设计上考虑，我将上下两层合并，做成了“输入RE与Code，输出Token串”。这两种程序我认为在实现价值和难度上是等价的。<br>
+&emsp;&emsp;在写之前一度认为工作量会集中在RE->mDFA的状态机转换上，但实际上写完RE->mDFA后在写词法分析的逻辑时发现事实不是如此。词法分析器根据mDFA状态机对Code能做的事非常有限（毕竟真正的编译器结构应该是由文法分析器调用词法分析器，词法分析器的上下文不应该是Code），所以实际上实现时，让Scanner承担了一些文法分析的工作（根据空格和换行符分割出词）。实验整体难度一般，可以想象语义导向文法分析的工作量应该还要大得多:D，不过做下来还是颇有收获，对词法分析的部分认识更深了。<br>
 &emsp;&emsp;下面是一些关于程序实现需要注意的细节，如有疑惑请联系我。<br>
 <br>&emsp;&emsp;Author: 71Y16114 龚呈<br>
-&emsp;&emsp;Github@FishGeorge&emsp;E-mail: gongcheng3c@foxmail.com
+&emsp;&emsp;Github@<a href="https://github.com/FishGeorge/Scanner">FishGeorge/Scanner</a><br>
+&emsp;&emsp;E-mail: gongcheng3c@foxmail.com
 
 ---
 ## Directory
